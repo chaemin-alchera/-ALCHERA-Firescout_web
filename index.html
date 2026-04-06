@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회사 자료 다운로드</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 30px 38px 56px;
+      font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+      background: #f2f2f2;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1460px;
+      margin: 0 auto;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      display: inline-block;
+      padding: 0;
+      border: none;
+      background: transparent;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .section-line {
+      width: 100%;
+      height: 1px;
+      background: #dddddd;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 30px 24px;
+      align-items: start;
+    }
+
+    .doc-card {
+      background: transparent;
+    }
+
+    .doc-thumb-label {
+      font-size: 13px;
+      color: #7a7a7a;
+      margin: 0 0 7px;
+      line-height: 1;
+    }
+
+    .doc-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #fff;
+      border: 1px solid #8f8f8f;
+      overflow: hidden;
+    }
+
+    .doc-thumb-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #fff;
+      pointer-events: none;
+    }
+
+    .doc-title {
+      margin: 12px 0 10px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.22;
+      word-break: keep-all;
+      letter-spacing: -0.2px;
+      min-height: 52px;
+    }
+
+    .doc-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      min-width: 74px;
+      padding: 7px 12px;
+      border-radius: 0;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      border: 1px solid #c7c7c7;
+      background: #fff;
+      color: #333;
+      transition: opacity 0.15s ease;
+    }
+
+    .action-btn:hover {
+      opacity: 0.88;
+    }
+
+    .action-btn.primary {
+      background: #e3362a;
+      border-color: #e3362a;
+      color: #fff;
+    }
+
+    .action-btn.wide {
+      flex: 1 1 100%;
+    }
+
+    .video-wrap {
+      max-width: 980px;
+    }
+
+    .video-thumb-link {
+      display: block;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ececec;
+      border: 1px solid #d5d5d5;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }
+
+    .video-thumb {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .video-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 88px;
+      height: 62px;
+      border-radius: 16px;
+      background: rgba(255, 0, 0, 0.9);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .video-guide {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+    }
+
+    .intro-table-wrap {
+      overflow-x: auto;
+    }
+
+    .intro-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    .intro-table th,
+    .intro-table td {
+      border: 1px solid #333;
+      padding: 12px 10px;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .intro-table th {
+      background: #d98f8f;
+      color: #000;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .intro-table td {
+      background: #ffffff;
+      font-size: 16px;
+      color: #111;
+      height: 50px;
+    }
+
+    .intro-table tbody tr:nth-child(even) td {
+      background: #ffffff;
+    }
+
+    @media (max-width: 1280px) {
+      .doc-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 920px) {
+      body {
+        padding: 24px 20px 40px;
+      }
+
+      .doc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .doc-title {
+        font-size: 19px;
+        min-height: auto;
+      }
+
+      .action-btn {
+        font-size: 14px;
+      }
+
+      .intro-table th {
+        font-size: 18px;
+      }
+
+      .intro-table td {
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .doc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        font-size: 21px;
+      }
+
+      .doc-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">기본자료</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/알체라_사업자등록증.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">사업자등록증</div>
+          <div class="doc-actions">
+            <a href="files/index/알체라_사업자등록증.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/알체라_사업자등록증.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/알체라 통장사본.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">통장 사본</div>
+          <div class="doc-actions">
+            <a href="files/index/알체라 통장사본.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/알체라 통장사본.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/공동주택용 소개서.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">제품 소개서</div>
+          <div class="doc-actions">
+            <a href="files/index/공동주택용 소개서.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/공동주택용 소개서.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/파이어스카우트 리플렛.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">카탈로그(브로셔)</div>
+          <div class="doc-actions">
+            <a href="files/index/파이어스카우트 리플렛.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/파이어스카우트 리플렛.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/사용자 매뉴얼.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">사용자메뉴얼</div>
+          <div class="doc-actions">
+            <a href="files/index/사용자 매뉴얼.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/사용자 매뉴얼.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">각종 인증서 및 자격증</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/KISA 인증서.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">KISA인증서</div>
+          <div class="doc-actions">
+            <a href="files/index/KISA 인증서.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/KISA 인증서.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/GS인증.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">GS인증서</div>
+          <div class="doc-actions">
+            <a href="files/index/GS인증.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/GS인증.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/특허등록증.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">특허</div>
+          <div class="doc-actions">
+            <a href="files/index/특허등록증.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/특허등록증.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/정보통신공사업등록증.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">전기통신공사업</div>
+          <div class="doc-actions">
+            <a href="files/index/정보통신공사업등록증.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/정보통신공사업등록증.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">입찰 관련 서류</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/입찰 공고.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">표준 입찰공고서</div>
+          <div class="doc-actions">
+            <a href="files/index/입찰 공고.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/입찰 공고.hwp" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/시방서.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">표준 시방서</div>
+          <div class="doc-actions">
+            <a href="files/index/시방서.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/시방서.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/정부지원금 작성 샘플.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">지원서 작성 샘플</div>
+          <div class="doc-actions">
+            <a href="files/index/정부지원금 작성 샘플.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/정부지원금 작성 샘플.hwp" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/입찰 공고.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">지역별 공고서</div>
+          <div class="doc-actions">
+            <a href="region.html" class="action-btn primary wide">이동</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">기타</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/의견서_수의계약 가능 여부.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">의견서_수의계약 가능 여부</div>
+          <div class="doc-actions">
+            <a href="files/index/의견서_수의계약 가능 여부.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/의견서_수의계약 가능 여부.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/공산품 가능여부.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">공산품 가능여부</div>
+          <div class="doc-actions">
+            <a href="files/index/공산품 가능여부.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/공산품 가능여부.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/수선유지 가능여부.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">수선유지 가능여부</div>
+          <div class="doc-actions">
+            <a href="files/index/수선유지 가능여부.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/수선유지 가능여부.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-thumb-label">첫페이지 보이기</div>
+          <div class="doc-thumb-wrap"><iframe class="doc-thumb-frame" src="files/index/전기통신공사업.pdf#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe></div>
+          <div class="doc-title">전기통신공사업</div>
+          <div class="doc-actions">
+            <a href="files/index/전기통신공사업.pdf" target="_blank" class="action-btn">보기</a>
+            <a href="files/index/전기통신공사업.pdf" download class="action-btn primary">다운로드</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">시연 영상 (* 클릭하시면 영상을 보실 수 있습니다.)</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="video-wrap">
+        <a class="video-thumb-link" href="https://www.youtube.com/watch?v=1JfzHnI_7Do" target="_blank" rel="noopener noreferrer">
+          <img class="video-thumb" src="https://img.youtube.com/vi/1JfzHnI_7Do/hqdefault.jpg" alt="시연 영상 썸네일">
+          <div class="video-play">▶</div>
+        </a>
+        <div class="video-guide">* 위 이미지를 클릭하시면 영상을 보실 수 있습니다.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">주요 고객사 도입 현황</div>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="intro-table-wrap">
+        <table class="intro-table">
+          <thead>
+            <tr>
+              <th>서울</th>
+              <th>경기도</th>
+              <th>부산</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>광화문스페이스본</td>
+              <td>(파주) 별숲오르트가람마을12단지</td>
+              <td>부산SK허브스카이</td>
+            </tr>
+            <tr>
+              <td>청량리롯데캐슬SKY-L65</td>
+              <td>장인STX칸1단지, 2단지</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>강남자곡힐스테이트</td>
+              <td>(화성) 동탄역롯데캐슬</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>용산센트럴파크</td>
+              <td>(성남) 판교신미주</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>경희궁롯데캐슬</td>
+              <td>(용인) 힐스테이트용인고진역2단지</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
